@@ -1,0 +1,10 @@
+
+微服务形式的异常处理与非微服务异常处理的方式
+
+
+普通项目异常的公共处理
+@ControllerAdvice（作为异常处理的公共类）
+@ExceptionHandler（捕获各种异常并进行处理）
+
+微服务异常的公共处理
+@FeignClient注解内指定微服务名称，路径，fallbackFactory 中设置重写create方法进行公共异常处理
