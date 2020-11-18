@@ -1,0 +1,70 @@
+解决方案来源：https://www.cnblogs.com/mmzs/p/9167743.html
+
+方法一：
+
+Spring Framework 4.2 GA为CORS提供了第一类支持，使您比通常的基于过滤器的解决方案更容易和更强大地配置它。所以springMVC的版本要在4.2或以上版本才支持@CrossOrigin
+---在控制层的类上或者方法上添加，控制的颗粒度不同
+@RestController
+@RequestMapping("/account")
+public class AccountController {
+
+    @CrossOrigin
+    @GetMapping("/{id}")
+    public Account retrieve(@PathVariable Long id) {
+        // ...
+    }
+}
+
+方法二：
+普通框架：
+@Configuration
+@EnableWebMvc
+public class WebConfig extends WebMvcConfigurerAdapter {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**");
+    }
+}
+
+springboot 框架：
+@Configuration
+public class MyConfiguration {
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**");          
+            }
+        };
+    }
+}
+
+
+三、spring注解@CrossOrigin不起作用的原因
+
+1、是springMVC的版本要在4.2或以上版本才支持@CrossOrigin
+
+2、非@CrossOrigin没有解决跨域请求问题，而是不正确的请求导致无法得到预期的响应，导致浏览器端提示跨域问题。
+
+3、在Controller注解上方添加@CrossOrigin注解后，仍然出现跨域问题，解决方案之一就是：
+
+在@RequestMapping注解中没有指定Get、Post方式，具体指定后，问题解决。
+
+类似代码如下：
+@CrossOrigin
+@RestController
+public class person{
+    
+    @RequestMapping(method = RequestMethod.GET)
+    public String add() {
+        // 若干代码
+    }
+}
+
+
+
+
+
